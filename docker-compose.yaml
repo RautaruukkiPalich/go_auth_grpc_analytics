@@ -1,0 +1,24 @@
+version: "3.6"
+
+services:
+  app1:
+    container_name: analytics1
+    build: .
+    ports:
+      - "${HOST_PORT:-18081}:8081"
+    restart: always
+
+  app2:
+    container_name: analytics2
+    build: .
+    ports:
+      - "${HOST_PORT:-18082}:8082"
+    restart: always
+
+  app3:
+    container_name: analytics3
+    build: .
+    ports:
+      - "${HOST_PORT:-18083}:8083"
+    restart: always
+

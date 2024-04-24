@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
-	"github.com/rautaruukkipalich/go_auth_grpc_analitycs/internal/config"
-	"github.com/rautaruukkipalich/go_auth_grpc_analitycs/internal/lib/slerr"
+	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/config"
+	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/lib/slerr"
 )
 
 type Message struct {
@@ -35,7 +35,7 @@ type Consumer interface {
 }
 
 const (
-	timeout = time.Millisecond * 100
+	timeout = time.Millisecond * 1000
 )
 
 func New(log *slog.Logger, cfg *config.KafkaConfig) *Broker {
@@ -45,7 +45,7 @@ func New(log *slog.Logger, cfg *config.KafkaConfig) *Broker {
 	c, err := kafka.NewConsumer(
 		&kafka.ConfigMap{
 			"bootstrap.servers":  fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
-			"group.id":           "kafka-consumer",
+			"group.id":           cfg.ConsumerGroup,
 			"auto.offset.reset":  "smallest",
 			"enable.auto.commit": "true",
 		},
@@ -92,7 +92,7 @@ func (b *Broker) Run() chan Payload {
 					}
 					msgch <- data.Payload
 				case kafka.Error:
-					log.Error("error while sending message", slerr.Err(e))
+					log.Error("internal kafka error", slerr.Err(e))
 				}
 			}
 		}
