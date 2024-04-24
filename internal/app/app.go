@@ -4,22 +4,23 @@ import (
 	"log/slog"
 
 	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/app/kafka"
-	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/app/clickhouse"
 	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/config"
+	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/storage/db"
 )
 
 type App struct {
-	Clickhouse clickhouse.IClickhouse
+	DB db.DB
 	Kafka kafka.Consumer
 	log *slog.Logger
 }
 
 func New(log *slog.Logger, cfg *config.Config) *App{
 	kafka := kafka.New(log, &cfg.Kafka)
-	clickhouse := clickhouse.New(log)
-
+	db := db.New(log, &cfg.ClickHouse)
+	log.Info("config: ", cfg)
+	
 	return &App{
-		Clickhouse: clickhouse,
+		DB: db,
 		Kafka: kafka,
 		log: log,
 	}
@@ -31,7 +32,8 @@ func (a *App) Run() {
 	log.Info("starting app")
 
 	msgch := a.Kafka.Run()
-	a.Clickhouse.Run(msgch)
+
+	a.DB.Run(msgch)
 }
 
 func (a *App) Stop() {
@@ -40,7 +42,7 @@ func (a *App) Stop() {
 	log.Info("stopping app")
 
 	defer a.Kafka.Stop()
-	defer a.Clickhouse.Stop()
+	defer a.DB.Stop()
 }
 
 
