@@ -1,0 +1,14 @@
+env: "local"
+kafka:
+  host: "localhost"
+  port: 29092
+  consumerGroup: "analytic"
+  topic: "mail"
+clickhouse:
+  host: clickhouse
+  port: 9000
+  database: "default"
+  username: "default"
+  password: ""
+  max_execution_time: 60
+  dial_timeout: 30s

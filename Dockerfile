@@ -6,12 +6,12 @@ WORKDIR /usr/src
 
 COPY ["go.mod","go.sum","./"]
 
-RUN go mod download
+RUN go mod tidy && go mod download
 
 COPY . .
 
 # build
-RUN go mod tidy && go build -o ./bin/app ./cmd/app/main.go 
+RUN go build -o ./bin/app ./cmd/app/main.go 
 
 # create alpine
 FROM alpine:latest AS runner
@@ -20,5 +20,6 @@ RUN apk update
 
 # copy binary from builder
 COPY --from=builder /usr/src/bin/app .
+COPY ./config ./config
 
-CMD ["./app"]
+CMD ["./app", "--config=./config/docker_local.yaml"]
