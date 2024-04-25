@@ -7,10 +7,6 @@ services:
     ports:
       - "${HOST_PORT:-18081}:8081"
     restart: always
-    networks:
-      - db
-    depends_on:
-      - clickhouse
 
   # app2:
   #   container_name: analytics2
@@ -25,22 +21,3 @@ services:
   #   ports:
   #     - "${HOST_PORT:-18083}:8083"
   #   restart: always
-
-  clickhouse:
-    container_name: clickhouse
-    image: clickhouse/clickhouse-server:24.3.2.23-alpine
-    ports:
-      - "8123:8123"
-      - "9000:9000"
-    restart: always
-    networks:
-      - db
-    volumes:
-      - clickhouse:/data/clickhouse
-
-networks:
-  db:
-    driver: bridge
-
-volumes:
-    clickhouse:

@@ -22,4 +22,4 @@ RUN apk update
 COPY --from=builder /usr/src/bin/app .
 COPY ./config ./config
 
-CMD ["./app", "--config=./config/docker_local.yaml"]
+CMD ["./app", "--config=./config/local.yaml"]
