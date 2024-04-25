@@ -7,13 +7,13 @@ import (
 
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
-	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/app/kafka"
 	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/config"
 	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/lib/slerr"
+	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/models"
 )
 
 type DB interface {
-	Run(chan kafka.Payload)
+	Run(chan models.Payload)
 	Stop()
 }
 
@@ -99,7 +99,7 @@ func createDatabase(conn driver.Conn, log *slog.Logger) error {
 	return err
 }
 
-func (h *ClickHouse) Run(msgch chan kafka.Payload) {
+func (h *ClickHouse) Run(msgch chan models.Payload) {
 	const op = "storage.db.clickhouse.Run"
 	log := h.log.With(slog.String("op", op))
 	log.Info("start clickhouse")
@@ -129,7 +129,7 @@ func (h *ClickHouse) Stop() {
 	defer close(h.done)
 }
 
-func (h *ClickHouse) Push(msg *kafka.Payload) error {
+func (h *ClickHouse) Push(msg *models.Payload) error {
 	const op = "storage.db.clickhouse.Push"
 	log := h.log.With(slog.String("op", op))
 	log.Info("add message")

@@ -3,18 +3,26 @@ package app
 import (
 	"log/slog"
 
-	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/app/kafka"
+	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/transport/kafka"
 	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/config"
+	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/models"
 	"github.com/rautaruukkipalich/go_auth_grpc_analytics/internal/storage/db"
 )
 
+
+type Consumer interface {
+	Run() chan models.Payload
+	Stop()
+}
+
 type App struct {
 	DB db.DB
-	Kafka kafka.Consumer
+	Kafka Consumer
 	log *slog.Logger
 }
 
 func New(log *slog.Logger, cfg *config.Config) *App{
+	// kafka := kafka.New(log, &cfg.Kafka)
 	kafka := kafka.New(log, &cfg.Kafka)
 	db := db.New(log, &cfg.ClickHouse)
 	log.Info("config: ", cfg)
