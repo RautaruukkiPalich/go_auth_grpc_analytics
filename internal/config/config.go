@@ -26,7 +26,7 @@ type ClickHouseConfig struct {
 	Host             string        `yaml:"host"`
 	Port             string        `yaml:"port"`
 	Database         string        `yaml:"database"`
-	Username         string        `yaml:"user"`
+	Username         string        `yaml:"username"`
 	Password         string        `yaml:"password"`
 	MaxExecutionTime int           `yaml:"max_execution_time"`
 	DialTimeout      time.Duration `yaml:"dial_timeout"`
